@@ -17,15 +17,17 @@ class FreetCollection {
    *
    * @param {string} authorId - The id of the author of the freet
    * @param {string} content - The id of the content of the freet
+   * @param {Date} endTime - The end time of the timed freet
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+  static async addOne(authorId: Types.ObjectId | string, content: string, endTime?: Date): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const freet = new FreetModel({
       authorId,
       dateCreated: date,
       content,
-      dateModified: date
+      dateModified: date,
+      endTime: endTime
     });
     await freet.save(); // Saves freet to MongoDB
     return freet.populate('authorId');
@@ -86,6 +88,23 @@ class FreetCollection {
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
     const freet = await FreetModel.deleteOne({_id: freetId});
     return freet !== null;
+  }
+
+  /**
+   * Delete all expired freetIDs
+   *
+   * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the freets
+   */
+   static async deleteExpires() {
+    const allFreets = await FreetCollection.findAll();
+    const date = new Date();
+    // for freet in all freets 
+    for (var freet of allFreets) {
+      // check if date is past endTime
+      if (freet.endTime < date) {
+        await FreetModel.deleteOne({_id: freet._id});
+      }
+    }
   }
 
   /**

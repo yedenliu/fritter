@@ -28,6 +28,7 @@ const router = express.Router();
 router.get(
   '/',
   async (req: Request, res: Response, next: NextFunction) => {
+    FreetCollection.deleteExpires();
     // Check if authorId query parameter was supplied
     if (req.query.author !== undefined) {
       next();
@@ -42,6 +43,7 @@ router.get(
     userValidator.isAuthorExists
   ],
   async (req: Request, res: Response) => {
+    FreetCollection.deleteExpires();
     const authorFreets = await FreetCollection.findAllByUsername(req.query.author as string);
     const response = authorFreets.map(util.constructFreetResponse);
     res.status(200).json(response);
@@ -66,9 +68,14 @@ router.post(
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
+    FreetCollection.deleteExpires();
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await FreetCollection.addOne(userId, req.body.content);
-
+    var endTime = req.body.endTime;
+    console.log(req.body);
+    if (endTime == "") {
+      endTime = null;
+    }
+    const freet = await FreetCollection.addOne(userId, req.body.content, endTime);
     res.status(201).json({
       message: 'Your freet was created successfully.',
       freet: util.constructFreetResponse(freet)
@@ -94,6 +101,7 @@ router.delete(
     freetValidator.isValidFreetModifier
   ],
   async (req: Request, res: Response) => {
+    FreetCollection.deleteExpires();
     await FreetCollection.deleteOne(req.params.freetId);
     res.status(200).json({
       message: 'Your freet was deleted successfully.'
@@ -123,6 +131,7 @@ router.put(
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
+    FreetCollection.deleteExpires();
     const freet = await FreetCollection.updateOne(req.params.freetId, req.body.content);
     res.status(200).json({
       message: 'Your freet was updated successfully.',
