@@ -22,8 +22,8 @@ router.get(
       next();
       return;
     }
-    //const allLikes = await LikeCollection.findAll();
-    //res.status(200).json(allLikes);
+    const allLikes = await LikeCollection.findAll();
+    res.status(200).json(allLikes);
   }
 );
 
@@ -68,9 +68,9 @@ router.delete(
     freetValidator.isFreetExists
   ],
   async (req: Request, res: Response) => {
-    //await LikeCollection.deleteOne(req.params.freetId);
+    await LikeCollection.deleteOne(req.params.likerId, req.params.freetId);
     res.status(200).json({
-      message: 'Your freet was deleted successfully.'
+      message: 'Your like was removed successfully.'
     });
   }
 );
