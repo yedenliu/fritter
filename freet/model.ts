@@ -4,6 +4,7 @@ import type {User} from '../user/model';
 
 /**
  * This file defines the properties stored in a Freet
+ * Defining all the data structures for Typscript use and "tables" for MongoDB
  * DO NOT implement operations here ---> use collection file
  */
 
