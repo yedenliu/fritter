@@ -9,7 +9,7 @@ const router = express.Router();
 /**
  * Get all the comments of a freet 
  *
- * @name GET /api/freets
+ * @name GET /api/comments
  *
  * @return {Comment[]} - A list of all the comments attached to a freet
  * @throws {400} - If freetId is not given
@@ -29,7 +29,7 @@ router.get(
 /**
  * Add a new comment
  *
- * @name POST /api/freets
+ * @name POST /api/comments
  *
  * @return {FreetResponse} - The commented freet
  * @throws {403} - If the user is not logged in
@@ -75,4 +75,4 @@ router.delete(
   }
 );
 
-export {router as CommentRouter};
+export {router as commentRouter};
