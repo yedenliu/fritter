@@ -2,6 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
+import UserModel from 'user/model';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -27,7 +28,7 @@ class FreetCollection {
       dateCreated: date,
       content,
       dateModified: date,
-      endTime: endTime
+      endTime: endTime,
     });
     await freet.save(); // Saves freet to MongoDB
     return freet.populate('authorId');
@@ -66,17 +67,31 @@ class FreetCollection {
 
   /**
    * Update a freet with the new content
+   * This edit feature is different from the follow up feature because it has a 30 min time limit 
    *
    * @param {string} freetId - The id of the freet to be updated
+   * @param {string} authorId - The id of the creater of the freet
    * @param {string} content - The new content of the freet
    * @return {Promise<HydratedDocument<Freet>>} - The newly updated freet
    */
-  static async updateOne(freetId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+  static async updateOne(freetId: Types.ObjectId | string, authorId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+    // saving variables 
+    const author = await UserModel.findOne({_id: authorId});
     const freet = await FreetModel.findOne({_id: freetId});
-    freet.content = content;
-    freet.dateModified = new Date();
-    await freet.save();
-    return freet.populate('authorId');
+    const currentTime = new Date()
+    const oldTime = freet.dateCreated
+    var duration = (currentTime.valueOf() - oldTime.valueOf())
+    console.log(duration)
+    
+    // if user is verified OR time is within 30 min of posting, can update
+    if (author.isVerified) { //| duration <= 30
+      freet.content = content;
+      freet.dateModified = new Date();
+      await freet.save();
+      return freet.populate('authorId');
+    }
+    // if time is 30 min past time created, return error message 
+  
   }
 
   /**

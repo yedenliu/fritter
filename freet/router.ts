@@ -132,7 +132,7 @@ router.put(
   ],
   async (req: Request, res: Response) => {
     FreetCollection.deleteExpires();
-    const freet = await FreetCollection.updateOne(req.params.freetId, req.body.content);
+    const freet = await FreetCollection.updateOne(req.params.freetId, req.params.authorId, req.body.content);
     res.status(200).json({
       message: 'Your freet was updated successfully.',
       freet: util.constructFreetResponse(freet)

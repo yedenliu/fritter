@@ -1,5 +1,6 @@
 import type {Types, PopulatedDoc, Document} from 'mongoose';
 import {Schema, model} from 'mongoose';
+// import mongoose from 'mongoose';
 import type {User} from '../user/model';
 
 /**
@@ -13,9 +14,10 @@ export type Freet = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   authorId: Types.ObjectId;
   dateCreated: Date;
-  content: string;
+  content: string; // | Freet
   dateModified: Date;
   endTime: Date;
+  usersLiked: Array<Types.ObjectId>;
 };
 
 export type PopulatedFreet = {
@@ -25,11 +27,13 @@ export type PopulatedFreet = {
   content: string;
   dateModified: Date;
   endTime: Date;
+  usersLiked: Array<Types.ObjectId>;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
 // Freets stored in this table will have these fields, with the
 // type given by the type property, inside MongoDB
+
 const FreetSchema = new Schema<Freet>({
   // The author userId
   authorId: {
@@ -57,6 +61,13 @@ const FreetSchema = new Schema<Freet>({
   endTime: {
     type: Date,
     required: false
+  },
+  // Array of users liked 
+  usersLiked: {
+    type: [Schema.Types.ObjectId],
+    required: false,
+    ref: 'User',
+    default: []
   }
 });
 
