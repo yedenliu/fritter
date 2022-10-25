@@ -113,11 +113,11 @@ class FreetCollection {
    */
    static async deleteExpires() {
     const allFreets = await FreetCollection.findAll();
-    const date = new Date();
+    const date = new Date(); // current time 
     // for freet in all freets 
     for (var freet of allFreets) {
       // check if date is past endTime
-      if (freet.endTime < date) {
+      if ((freet.endTime < date) && (freet.endTime != null)) {
         await FreetModel.deleteOne({_id: freet._id});
       }
     }
