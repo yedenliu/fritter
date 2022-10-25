@@ -29,6 +29,7 @@ class FreetCollection {
       content,
       dateModified: date,
       endTime: endTime,
+      usersLiked: []
     });
     await freet.save(); // Saves freet to MongoDB
     return freet.populate('authorId');
@@ -82,7 +83,7 @@ class FreetCollection {
     const oldTime = freet.dateCreated
     var duration = (currentTime.valueOf() - oldTime.valueOf())
     console.log(duration)
-    
+
     // if user is verified OR time is within 30 min of posting, can update
     if (author.isVerified) { //| duration <= 30
       freet.content = content;
@@ -90,7 +91,9 @@ class FreetCollection {
       await freet.save();
       return freet.populate('authorId');
     }
-    // if time is 30 min past time created, return error message 
+    // if time is 30 min past time created, nothing happens (return old freet)
+    // should never have to run this return because of middleware validation checks
+    return freet.populate('authorId')
   
   }
 
@@ -128,6 +131,18 @@ class FreetCollection {
   static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
     await FreetModel.deleteMany({authorId});
   }
-}
 
+  /** 
+   * Add like (freet-side, i.e., add userId to usersLiked array)
+   * 
+   * @param {string} userId - The id of the user
+   * @param {string} freetId - The id of freet user wants to like
+  */
+   static async addLikedBy(userId: Types.ObjectId | string, freetId: Types.ObjectId | string) {
+    FreetModel.updateOne(
+      {_id: freetId},
+      {$push: { usersLiked: userId } }
+      );    
+  }
+}
 export default FreetCollection;

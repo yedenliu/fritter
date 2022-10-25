@@ -91,6 +91,19 @@ class UserCollection {
     const user = await UserModel.deleteOne({_id: userId});
     return user !== null;
   }
+
+  /** 
+   * Add like (user-side, i.e., add freetId to allLikes array)
+   * 
+   * @param {string} userId - The id of the user
+   * @param {string} freetId - The id of freet user wants to like
+  */
+   static async addLike(userId: Types.ObjectId | string, freetId: Types.ObjectId | string) {
+    UserModel.updateOne(
+      {_id: userId},
+      {$push: { allLikes: freetId } }
+      );    
+  }
 }
 
 export default UserCollection;

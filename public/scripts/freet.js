@@ -8,7 +8,7 @@
 function createFreet(fields) {
   fetch('/api/freets', {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
-    .catch(showResponse);
+    .catch(showResponse); // typically this would have a separate error handler 
 }
 
 function viewAllFreets(fields) {
@@ -34,3 +34,10 @@ function deleteFreet(fields) {
     .then(showResponse)
     .catch(showResponse);
 }
+
+// ADDED FUNCTIONS FOR INTERACTIONS WITH FREET
+// function createComment(fields) {
+//   fetch(`/api/comment/`, {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+//     .then(showResponse)
+//     .catch(showResponse);
+// }

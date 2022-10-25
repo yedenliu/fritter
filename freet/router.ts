@@ -1,6 +1,7 @@
 import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
 import FreetCollection from './collection';
+import UserCollection from '../user/collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
 import * as util from './util';
@@ -132,7 +133,7 @@ router.put(
   ],
   async (req: Request, res: Response) => {
     FreetCollection.deleteExpires();
-    const freet = await FreetCollection.updateOne(req.params.freetId, req.params.authorId, req.body.content);
+    const freet = await FreetCollection.updateOne(req.params.freetId, req.session.authorId, req.body.content);
     res.status(200).json({
       message: 'Your freet was updated successfully.',
       freet: util.constructFreetResponse(freet)
@@ -140,4 +141,26 @@ router.put(
   }
 );
 
+/**
+ * Add like to Freet
+ *
+ * @name POST /api/freets/:id
+ *
+ * @throws {403} - If the user is not logged in
+ */
+ router.post(
+  '/:freetId?',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    FreetCollection.deleteExpires();
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    await FreetCollection.addLikedBy(userId, req.params.freetId);
+    await UserCollection.addLike(userId, req.params.freetId);
+    res.status(201).json({
+      message: 'You have successfully added a like',
+    });
+  }
+);
 export {router as freetRouter};

@@ -49,7 +49,7 @@ const UserSchema = new Schema({
   // Array of users liked 
   allLikes: {
     type: [Schema.Types.ObjectId],
-    required: false,
+    required: true,
     ref: 'Freet' 
   },
   // Boolean determining is/not verified status

@@ -45,6 +45,7 @@ const isValidFreetContent = (req: Request, res: Response, next: NextFunction) =>
 
 /**
  * Checks if the current user is the author of the freet whose freetId is in req.params
+ * Adding additional checks for 30 minute limit on editing + if account is verified user 
  */
 const isValidFreetModifier = async (req: Request, res: Response, next: NextFunction) => {
   const freet = await FreetCollection.findOne(req.params.freetId);

@@ -14,7 +14,7 @@ export type Freet = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   authorId: Types.ObjectId;
   dateCreated: Date;
-  content: string; // | Freet
+  content: string; 
   dateModified: Date;
   endTime: Date;
   usersLiked: Array<Types.ObjectId>;
@@ -60,12 +60,13 @@ const FreetSchema = new Schema<Freet>({
   // Add end time for timed freet
   endTime: {
     type: Date,
-    required: false
+    required: true,
+    default: null
   },
   // Array of users liked 
   usersLiked: {
     type: [Schema.Types.ObjectId],
-    required: false,
+    required: true,
     ref: 'User',
     default: []
   }
