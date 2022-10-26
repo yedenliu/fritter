@@ -44,7 +44,7 @@ const formsAndHandlers = {
   'delete-comment': deleteComment,
   'get-likes': getLikes,
   'add-like': addLike,
-  'delete-like': deleteLike
+  'delete-like': deleteLike,
 };
 
 // Attach handlers to forms

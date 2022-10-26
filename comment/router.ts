@@ -55,7 +55,7 @@ router.post(
 /**
  * Delete a comment
  *
- * @name DELETE /api/comment
+ * @name DELETE /api/comment/:commentId
  *
  * @return {string} - A success message
  * @throws {403} - If the user is not logged in 

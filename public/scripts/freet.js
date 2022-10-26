@@ -18,7 +18,7 @@ function viewAllFreets(fields) {
 }
 
 function getLikes(fields) {
-  fetch('/api/freets')
+  fetch('/api/like/freets')
     .then(showResponse)
     .catch(showResponse);
 }
@@ -42,13 +42,13 @@ function deleteFreet(fields) {
 }
 
 function addLike(fields) {
-  fetch(`/api/freets/${fields.id}`, {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  fetch(`/api/freets/like/${fields.id}`, {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
     .catch(showResponse); 
 }
 
 function deleteLike(fields) {
-  fetch(`/api/freets/${fields.id}`, {method: 'DELETE'})
+  fetch(`/api/freets/like/${fields.id}`, {method: 'DELETE'})
     .then(showResponse)
     .catch(showResponse); 
 }

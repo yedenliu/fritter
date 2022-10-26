@@ -142,14 +142,14 @@ router.put(
 );
 
 /**
- * Remove like from Freet
+ * Add like to Freet
  *
- * @name POST /api/freets?
+ * @name POST /api/like/freets?
  *
  * @throws {403} - If the user is not logged in
  */
  router.post(
-  '/:freetId?',
+  '/like/:freetId?',
   [
     userValidator.isUserLoggedIn,
   ],
@@ -166,14 +166,14 @@ router.put(
 
 
 /**
- * Add like to Freet
+ * Remove like from Freet
  *
- * @name DELTE /api/freets?
+ * @name DELETE /api/like/:id
  *
  * @throws {403} - If the user is not logged in
  */
- router.post(
-  '/:freetId?',
+ router.delete(
+  '/like/:freetId?',
   [
     userValidator.isUserLoggedIn,
   ],
@@ -188,17 +188,15 @@ router.put(
   }
 );
 
-
-
 /**
  * Get all the likes on a freet
  *
- * @name GET /api/freets
+ * @name GET /api/like/:id
  *
  * @return {Array<Types.ObjectId | String>} - A list of all the freet's likes
  */
  router.get(
-  '/:freetId?',
+  '/like/:freetId?',
   async (req: Request, res: Response, next: NextFunction) => {
     FreetCollection.deleteExpires();
     return FreetCollection.findLikes(req.params.freetId);
