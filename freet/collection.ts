@@ -2,7 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
-import UserModel from 'user/model';
+import UserModel from '../user/model';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -21,8 +21,11 @@ class FreetCollection {
    * @param {Date} endTime - The end time of the timed freet
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string, endTime?: Date): Promise<HydratedDocument<Freet>> {
+  static async addOne(authorId: Types.ObjectId | string, content: string, endTime?: Date | string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
+    if (endTime == ""){
+      endTime = null;
+    }
     const freet = new FreetModel({
       authorId,
       dateCreated: date,
@@ -81,11 +84,10 @@ class FreetCollection {
     const freet = await FreetModel.findOne({_id: freetId});
     const currentTime = new Date()
     const oldTime = freet.dateCreated
-    var duration = (currentTime.valueOf() - oldTime.valueOf())
-    console.log(duration)
+    var duration = (currentTime.getTime() - oldTime.getTime())/60000 // getting minutes
 
     // if user is verified OR time is within 30 min of posting, can update
-    if (author.isVerified) { //| duration <= 30
+    if (author.isVerified || duration <= 30) {
       freet.content = content;
       freet.dateModified = new Date();
       await freet.save();
@@ -137,6 +139,7 @@ class FreetCollection {
    * 
    * @param {string} userId - The id of the user
    * @param {string} freetId - The id of freet user wants to like
+   * 
   */
    static async addLikedBy(userId: Types.ObjectId | string, freetId: Types.ObjectId | string) {
     FreetModel.updateOne(
@@ -144,5 +147,31 @@ class FreetCollection {
       {$push: { usersLiked: userId } }
       );    
   }
+
+  /**
+   * Delete like given freetId (freet-side)
+   *
+   * @param {string} userId - The id of the user
+   * @param {string} freetId - The id of freet user wants to like
+   */
+   static async deleteLikedBy(userId: Types.ObjectId | string, freetId: Types.ObjectId | string) {
+    FreetModel.updateOne(
+      {_id: freetId},
+      {$pull: { usersLiked: userId } }
+      )
+  }
+
+  /** 
+   * Find all users that have liked a freet
+   * 
+   * @param {string} freetId - The id of freet user wants to like
+   * @return {Promise<boolean>} - true if the freet has been deleted, false otherwise
+
+  */
+   static async findLikes(freetId: Types.ObjectId | string): Promise<Array<Types.ObjectId | string>> {
+    const freet = await FreetModel.findOne({_id: freetId});
+    return freet.usersLiked;
+  }
+
 }
 export default FreetCollection;

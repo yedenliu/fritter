@@ -104,6 +104,19 @@ class UserCollection {
       {$push: { allLikes: freetId } }
       );    
   }
+
+  /**
+   * Delete like given freetId (user-side)
+   *
+   * @param {string} userId - The id of the user
+   * @param {string} freetId - The id of freet user wants to like
+   */
+   static async deleteLike(userId: Types.ObjectId | string, freetId: Types.ObjectId | string) {
+    UserModel.updateOne(
+      {_id: userId},
+      {$pull: { allLikes: freetId } }
+      )
+  }
 }
 
 export default UserCollection;

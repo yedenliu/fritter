@@ -1,6 +1,5 @@
 import type {Types, PopulatedDoc, Document} from 'mongoose';
 import {Schema, model} from 'mongoose';
-// import mongoose from 'mongoose';
 import type {User} from '../user/model';
 
 /**
@@ -60,13 +59,13 @@ const FreetSchema = new Schema<Freet>({
   // Add end time for timed freet
   endTime: {
     type: Date,
-    required: true,
+    required: false,
     default: null
   },
   // Array of users liked 
   usersLiked: {
     type: [Schema.Types.ObjectId],
-    required: true,
+    required: false,
     ref: 'User',
     default: []
   }

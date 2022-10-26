@@ -9,7 +9,7 @@ const router = express.Router();
 /**
  * Get all the comments of a freet 
  *
- * @name GET /api/comments
+ * @name GET /api/comment
  *
  * @return {Comment[]} - A list of all the comments attached to a freet
  * @throws {400} - If freetId is not given
@@ -29,21 +29,21 @@ router.get(
 /**
  * Add a new comment
  *
- * @name POST /api/comments
+ * @name POST /api/comment
  *
  * @return {FreetResponse} - The commented freet
  * @throws {403} - If the user is not logged in
  * @throws {404} - If the freetId is not valid
  */
 router.post(
-  '/',
+  '/:freetId?',
   [
     userValidator.isUserLoggedIn,
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
     const commenterId = (req.session.userId);
-    const freetId = (req.session.freetId);
+    const freetId = (req.params.freetId);
     const content = (req.body.content);
     await CommentCollection.addOne(commenterId, freetId, content);
     res.status(201).json({
@@ -55,20 +55,20 @@ router.post(
 /**
  * Delete a comment
  *
- * @name DELETE /api/freets/
+ * @name DELETE /api/comment
  *
  * @return {string} - A success message
  * @throws {403} - If the user is not logged in 
  * @throws {404} - If the freetId is not valid
  */
 router.delete(
-  '/',
+  '/:commentId?',
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists
   ],
   async (req: Request, res: Response) => {
-    await CommentCollection.deleteOne(req.params.commenterId, req.params.freetId);
+    await CommentCollection.deleteOne(req.params.commentId);
     res.status(200).json({
       message: 'Your comment was deleted successfully.'
     });

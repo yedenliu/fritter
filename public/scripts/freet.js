@@ -17,6 +17,12 @@ function viewAllFreets(fields) {
     .catch(showResponse);
 }
 
+function getLikes(fields) {
+  fetch('/api/freets')
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function viewFreetsByAuthor(fields) {
   fetch(`/api/freets?author=${fields.author}`)
     .then(showResponse)
@@ -35,9 +41,16 @@ function deleteFreet(fields) {
     .catch(showResponse);
 }
 
-// ADDED FUNCTIONS FOR INTERACTIONS WITH FREET
-// function createComment(fields) {
-//   fetch(`/api/comment/`, {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
-//     .then(showResponse)
-//     .catch(showResponse);
-// }
+function addLike(fields) {
+  fetch(`/api/freets/${fields.id}`, {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse); 
+}
+
+function deleteLike(fields) {
+  fetch(`/api/freets/${fields.id}`, {method: 'DELETE'})
+    .then(showResponse)
+    .catch(showResponse); 
+}
+
+

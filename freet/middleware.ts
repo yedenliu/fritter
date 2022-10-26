@@ -1,6 +1,7 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
 import FreetCollection from '../freet/collection';
+import UserCollection from '../user/collection';
 
 /**
  * Checks if a freet with freetId is req.params exists
@@ -50,6 +51,20 @@ const isValidFreetContent = (req: Request, res: Response, next: NextFunction) =>
 const isValidFreetModifier = async (req: Request, res: Response, next: NextFunction) => {
   const freet = await FreetCollection.findOne(req.params.freetId);
   const userId = freet.authorId._id;
+  const author = await UserCollection.findOneByUserId(userId);
+  const isVerified = author.isVerified
+
+  const currentTime = new Date()
+  const oldTime = freet.dateCreated
+  var duration = (currentTime.getTime() - oldTime.getTime())/60000 // getting minutes
+
+  if (!isVerified && duration >= 30) {
+    res.status(403).json({
+      error: 'Cannot modify freet after 30 minutes if user is not verified'
+    });
+    return;
+  }
+
   if (req.session.userId !== userId.toString()) {
     res.status(403).json({
       error: 'Cannot modify other users\' freets.'

@@ -23,7 +23,7 @@ class CommentCollection {
       content
     });
     await comment.save(); // Saves freet to MongoDB
-    return comment.populate('commenterId'); // what would this do??? 
+    return comment.populate('commenterId');
   }
 
   /**
@@ -32,7 +32,7 @@ class CommentCollection {
    * @return {Promise<HydratedDocument<Comment>[]>} - An array of all of the comments
    */
   static async findAll(): Promise<HydratedDocument<Comment>[]>{
-    return CommentModel.find({}).populate('commenterId'); // again, what is this?? 
+    return CommentModel.find({}).populate('commenterId'); 
   }
 
   /**
@@ -49,12 +49,11 @@ class CommentCollection {
   /**
    * Delete a comment with given freetId and userId.
    *
-   * @param {Types.ObjectId} commenterId - The id of the commenter 
-   * @param {Types.ObjectId} freetId - The id of the the freet
+   * @param {Types.ObjectId} commentId - The id of the comment
    * @return {Promise<Boolean>} - true if the comment has been removed, false otherwise
    */
-   static async deleteOne(commenterId: Types.ObjectId | string, freetId: Types.ObjectId | string): Promise<boolean> {
-    const comment = await CommentModel.deleteOne({'commenterId': commenterId, 'freetId': freetId});
+   static async deleteOne(commentId: Types.ObjectId | string): Promise<boolean> {
+    const comment = await CommentModel.deleteOne({_id: commentId});
     return comment !== null;
   }
 }

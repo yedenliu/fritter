@@ -72,7 +72,6 @@ router.post(
     FreetCollection.deleteExpires();
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     var endTime = req.body.endTime;
-    console.log(req.body);
     if (endTime == "") {
       endTime = null;
     }
@@ -133,7 +132,8 @@ router.put(
   ],
   async (req: Request, res: Response) => {
     FreetCollection.deleteExpires();
-    const freet = await FreetCollection.updateOne(req.params.freetId, req.session.authorId, req.body.content);
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const freet = await FreetCollection.updateOne(req.params.freetId, req.session.userId, req.body.content);
     res.status(200).json({
       message: 'Your freet was updated successfully.',
       freet: util.constructFreetResponse(freet)
@@ -142,9 +142,33 @@ router.put(
 );
 
 /**
+ * Remove like from Freet
+ *
+ * @name POST /api/freets?
+ *
+ * @throws {403} - If the user is not logged in
+ */
+ router.post(
+  '/:freetId?',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    FreetCollection.deleteExpires();
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    await FreetCollection.deleteLikedBy(userId, req.params.freetId);
+    await UserCollection.deleteLike(userId, req.params.freetId);
+    res.status(200).json({
+      message: 'Your like has been removed',
+    });
+  }
+);
+
+
+/**
  * Add like to Freet
  *
- * @name POST /api/freets/:id
+ * @name DELTE /api/freets?
  *
  * @throws {403} - If the user is not logged in
  */
@@ -161,6 +185,23 @@ router.put(
     res.status(201).json({
       message: 'You have successfully added a like',
     });
+  }
+);
+
+
+
+/**
+ * Get all the likes on a freet
+ *
+ * @name GET /api/freets
+ *
+ * @return {Array<Types.ObjectId | String>} - A list of all the freet's likes
+ */
+ router.get(
+  '/:freetId?',
+  async (req: Request, res: Response, next: NextFunction) => {
+    FreetCollection.deleteExpires();
+    return FreetCollection.findLikes(req.params.freetId);
   }
 );
 export {router as freetRouter};
