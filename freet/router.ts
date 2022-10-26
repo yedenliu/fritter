@@ -144,7 +144,7 @@ router.put(
 /**
  * Add like to Freet
  *
- * @name POST /api/like/freets?
+ * @name POST /api/like/:id
  *
  * @throws {403} - If the user is not logged in
  */
