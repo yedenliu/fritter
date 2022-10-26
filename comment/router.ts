@@ -17,11 +17,8 @@ const router = express.Router();
 router.get(
   '/',
   async (req: Request, res: Response, next: NextFunction) => {
-    if (req.query.freetId !== undefined) {
-      next();
-      return;
-    }
-    const allComments = await CommentCollection.findAll();
+    const freetId = (req.body.freetId as string);
+    const allComments = await CommentCollection.findAll(freetId);
     res.status(200).json(allComments);
   }
 );
@@ -36,15 +33,15 @@ router.get(
  * @throws {404} - If the freetId is not valid
  */
 router.post(
-  '/:freetId?',
+  '/',
   [
     userValidator.isUserLoggedIn,
-    freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
-    const commenterId = (req.session.userId);
-    const freetId = (req.params.freetId);
-    const content = (req.body.content);
+    const commenterId = (req.session.userId as string);
+    const freetId = (req.body.freetId as string);
+    const content = (req.body.commentContent as string);
+    
     await CommentCollection.addOne(commenterId, freetId, content);
     res.status(201).json({
       message: 'You have successfully added your comment'

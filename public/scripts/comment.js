@@ -2,7 +2,7 @@
 
 
 function createComment(fields) {
-  fetch(`/api/comment/${fields.id}`, {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  fetch('/api/comment/', {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
     .catch(showResponse); // typically this would have a separate error handler 
 }

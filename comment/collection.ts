@@ -27,24 +27,14 @@ class CommentCollection {
   }
 
   /**
-   * Get all the comment of a freet
+   * Get all the comments of a freet
    *
    * @return {Promise<HydratedDocument<Comment>[]>} - An array of all of the comments
    */
-  static async findAll(): Promise<HydratedDocument<Comment>[]>{
-    return CommentModel.find({}).populate('commenterId'); 
+  static async findAll(freetId: Types.ObjectId | string): Promise<HydratedDocument<Comment>[]>{
+    return CommentModel.find({freetId: freetId}).populate('commenterId'); 
   }
 
-  /**
-   * Get comment of a freet given the user ID of the commenter
-   * 
-   * @param {Types.ObjectId} commenterId - The id of the user commenting on the freet
-   * @param {Types.ObjectId} freetId - The id of the freet the user is commenting on
-   * @return {Promise<HydratedDocument<Comment>>} - Comment
-   */
-   static async findOne(commenterId: Types.ObjectId | string, freetId: Types.ObjectId | string): Promise<HydratedDocument<Comment>> {
-    return CommentModel.findOne({'commenterId': commenterId, 'freetId': freetId}).populate('commenterId'); // again, what is this?? 
-  }
 
   /**
    * Delete a comment with given freetId and userId.

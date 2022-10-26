@@ -142,7 +142,7 @@ class FreetCollection {
    * 
   */
    static async addLikedBy(userId: Types.ObjectId | string, freetId: Types.ObjectId | string) {
-    FreetModel.updateOne(
+    await FreetModel.updateOne(
       {_id: freetId},
       {$push: { usersLiked: userId } }
       );    
@@ -155,22 +155,10 @@ class FreetCollection {
    * @param {string} freetId - The id of freet user wants to like
    */
    static async deleteLikedBy(userId: Types.ObjectId | string, freetId: Types.ObjectId | string) {
-    FreetModel.updateOne(
+    await FreetModel.updateOne(
       {_id: freetId},
       {$pull: { usersLiked: userId } }
       )
-  }
-
-  /** 
-   * Find all users that have liked a freet
-   * 
-   * @param {string} freetId - The id of freet user wants to like
-   * @return {Promise<boolean>} - true if the freet has been deleted, false otherwise
-
-  */
-   static async findLikes(freetId: Types.ObjectId | string): Promise<Array<Types.ObjectId | string>> {
-    const freet = await FreetModel.findOne({_id: freetId});
-    return freet.usersLiked;
   }
 
 }

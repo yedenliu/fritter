@@ -133,7 +133,7 @@ router.put(
   async (req: Request, res: Response) => {
     FreetCollection.deleteExpires();
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await FreetCollection.updateOne(req.params.freetId, req.session.userId, req.body.content);
+    const freet = await FreetCollection.updateOne(req.params.freetId, userId, req.body.content);
     res.status(200).json({
       message: 'Your freet was updated successfully.',
       freet: util.constructFreetResponse(freet)
@@ -142,64 +142,52 @@ router.put(
 );
 
 /**
- * Add like to Freet
+ * Delete like from Freet
  *
- * @name POST /api/like/:id
- *
- * @throws {403} - If the user is not logged in
- */
- router.post(
-  '/like/:freetId?',
-  [
-    userValidator.isUserLoggedIn,
-  ],
-  async (req: Request, res: Response) => {
-    FreetCollection.deleteExpires();
-    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    await FreetCollection.deleteLikedBy(userId, req.params.freetId);
-    await UserCollection.deleteLike(userId, req.params.freetId);
-    res.status(200).json({
-      message: 'Your like has been removed',
-    });
-  }
-);
-
-
-/**
- * Remove like from Freet
- *
- * @name DELETE /api/like/:id
+ * @name DELETE /api/freets/like
  *
  * @throws {403} - If the user is not logged in
  */
  router.delete(
-  '/like/:freetId?',
+  '/like/',
   [
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
     FreetCollection.deleteExpires();
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    await FreetCollection.addLikedBy(userId, req.params.freetId);
-    await UserCollection.addLike(userId, req.params.freetId);
-    res.status(201).json({
-      message: 'You have successfully added a like',
+    const freetId = (req.body.freetId as string)
+    await FreetCollection.deleteLikedBy(userId, freetId);
+    await UserCollection.deleteLike(userId, freetId);
+    res.status(200).json({
+      message: 'You have removed your like',
     });
   }
 );
 
+
 /**
- * Get all the likes on a freet
+ * Add like from Freet
  *
- * @name GET /api/like/:id
+ * @name POST /api/freets/like
  *
- * @return {Array<Types.ObjectId | String>} - A list of all the freet's likes
+ * @throws {403} - If the user is not logged in
  */
- router.get(
-  '/like/:freetId?',
-  async (req: Request, res: Response, next: NextFunction) => {
+ router.post(
+  '/like/',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
     FreetCollection.deleteExpires();
-    return FreetCollection.findLikes(req.params.freetId);
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const freetId = (req.body.freetId as string)    
+    await FreetCollection.addLikedBy(userId, freetId);
+    await UserCollection.addLike(userId, freetId);
+    res.status(201).json({
+      message: 'You successfully added your like',
+    });
   }
 );
+
 export {router as freetRouter};

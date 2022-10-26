@@ -42,7 +42,6 @@ const formsAndHandlers = {
   'create-comment': createComment,
   'view-all-comments': viewAllComments,
   'delete-comment': deleteComment,
-  'get-likes': getLikes,
   'add-like': addLike,
   'delete-like': deleteLike,
 };
