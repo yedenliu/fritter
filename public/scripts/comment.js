@@ -8,7 +8,7 @@ function createComment(fields) {
 }
 
 function viewAllComments(fields) {
-  fetch('/api/comment/')
+  fetch(`/api/comment?freet=${fields.freetId}`)
     .then(showResponse)
     .catch(showResponse);
 }

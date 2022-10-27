@@ -314,4 +314,57 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
+#### `GET /api/comment/:freetId?` - Get all comments for given freet
 
+**Returns**
+
+- All comment objects given the freet ID
+
+**Throws**
+
+- `400` if freetId is not given
+
+
+#### `POST /api/comment/` - Add new comment
+
+**Returns**
+
+- A success message
+- An object with comment’s details
+
+**Throws**
+
+- `403` if the user is not logged in
+
+
+#### `DELETE /api/comment/:commentId` - Delete a comment
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+
+
+#### `POST /api/like` - Add a like
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+
+
+#### `DELETE /api/freets/like/:freetId?` - Delete a like
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in

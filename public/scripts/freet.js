@@ -42,7 +42,7 @@ function addLike(fields) {
 }
 
 function deleteLike(fields) {
-  fetch('/api/freets/like', {method: 'DELETE'})
+  fetch(`/api/freets/like/${fields.id}`, {method: 'DELETE'})
     .then(showResponse)
     .catch(showResponse); 
 }

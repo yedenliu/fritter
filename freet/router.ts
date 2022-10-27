@@ -144,19 +144,19 @@ router.put(
 /**
  * Delete like from Freet
  *
- * @name DELETE /api/freets/like
+ * @name DELETE /api/freets/like/:id
  *
  * @throws {403} - If the user is not logged in
  */
  router.delete(
-  '/like/',
+  '/like/:freetId?',
   [
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
     FreetCollection.deleteExpires();
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freetId = (req.body.freetId as string)
+    const freetId = (req.params.freetId)
     await FreetCollection.deleteLikedBy(userId, freetId);
     await UserCollection.deleteLike(userId, freetId);
     res.status(200).json({
