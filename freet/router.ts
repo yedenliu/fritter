@@ -121,6 +121,7 @@ router.delete(
  * @throws {404} - If the freetId is not valid
  * @throws {400} - If the freet content is empty or a stream of empty spaces
  * @throws {413} - If the freet content is more than 140 characters long
+ * @throws {401} - If user is not verified and tries to edit after 30 minutes
  */
 router.put(
   '/:freetId?',
@@ -128,7 +129,8 @@ router.put(
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
     freetValidator.isValidFreetModifier,
-    freetValidator.isValidFreetContent
+    freetValidator.isValidFreetContent,
+    freetValidator.isValidUpdate
   ],
   async (req: Request, res: Response) => {
     FreetCollection.deleteExpires();
@@ -155,6 +157,7 @@ router.put(
   ],
   async (req: Request, res: Response) => {
     FreetCollection.deleteExpires();
+    console.log(req.params)
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const freetId = (req.params.freetId)
     await FreetCollection.deleteLikedBy(userId, freetId);

@@ -239,6 +239,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not the author of the freet
 - `400` if the new freet content is empty or a stream of empty spaces
 - `413` if the new freet content is more than 140 characters long
+- `401` if user is not verified and tries to edit after 30 minutes
 
 #### `POST /api/users/session` - Sign in user
 

@@ -46,9 +46,25 @@ const isValidFreetContent = (req: Request, res: Response, next: NextFunction) =>
 
 /**
  * Checks if the current user is the author of the freet whose freetId is in req.params
- * Adding additional checks for 30 minute limit on editing + if account is verified user 
  */
 const isValidFreetModifier = async (req: Request, res: Response, next: NextFunction) => {
+  const freet = await FreetCollection.findOne(req.params.freetId);
+  const userId = freet.authorId._id;
+
+  if (req.session.userId !== userId.toString()) {
+    res.status(403).json({
+      error: 'Cannot modify other users\' freets.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Adding additional checks for 30 minute limit on editing + if account is verified user 
+ */
+ const isValidUpdate = async (req: Request, res: Response, next: NextFunction) => {
   const freet = await FreetCollection.findOne(req.params.freetId);
   const userId = freet.authorId._id;
   const author = await UserCollection.findOneByUserId(userId);
@@ -65,18 +81,13 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
-  if (req.session.userId !== userId.toString()) {
-    res.status(403).json({
-      error: 'Cannot modify other users\' freets.'
-    });
-    return;
-  }
-
   next();
 };
+
 
 export {
   isValidFreetContent,
   isFreetExists,
-  isValidFreetModifier
+  isValidFreetModifier,
+  isValidUpdate
 };

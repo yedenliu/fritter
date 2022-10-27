@@ -145,7 +145,11 @@ class FreetCollection {
     await FreetModel.updateOne(
       {_id: freetId},
       {$push: { usersLiked: userId } }
-      );    
+      );
+    await UserModel.updateOne(
+      {_id: userId},
+      {$push: { allLikes: freetId } }
+      );      
   }
 
   /**
@@ -158,7 +162,11 @@ class FreetCollection {
     await FreetModel.updateOne(
       {_id: freetId},
       {$pull: { usersLiked: userId } }
-      )
+      );
+    await UserModel.updateOne(
+      {_id: userId},
+      {$pull: { allLikes: freetId } }
+      );
   }
 
 }
